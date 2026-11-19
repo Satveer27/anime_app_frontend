@@ -3,6 +3,8 @@ import Image from "next/image";
 import type { EpisodeAnalysis, HiddenGemItem, MostDroppedItem } from "@/lib/api";
 import { compact, integer } from "@/lib/api";
 import { ChapterNav } from "./ChapterNav";
+import { DataNote } from "./DataNote";
+import { Mascot } from "./Mascot";
 import { Reveal } from "./Reveal";
 
 export type Gem = HiddenGemItem & { image_url: string | null };
@@ -24,8 +26,11 @@ export function Measure(props: Props) {
   return (
     <section id="measure" className="section" aria-labelledby="measure-title">
       <div className="wrap">
-        <Reveal className="section-head">
-          <h2 id="measure-title">A 7.9 tells you very little</h2>
+        <Reveal className="section-head has-mascot">
+          <Mascot kind="naruto" className="head-mascot" />
+          <h2 id="measure-title">
+            A 7.9 tells you <em className="accent">very little</em>
+          </h2>
           <p>
             It could be a slow burn that lands in episode eight, or a show half its viewers dropped. Here is what to
             check instead.
@@ -216,7 +221,7 @@ function Underrated({ gems }: { gems: Gem[] | null }) {
         <h3>Small crowds, big scores</h3>
         <p>
           Top fifth for score, below the median for audience.
-          {gems?.[0] ? ` ${gems[0].title} has ${compact(gems[0].members_mal)} members and a ${gems[0].mal_score.toFixed(2)}.` : ""} For
+          {gems?.[0] ? ` ${gems[0].title} has ${compact(gems[0].members_mal ?? 0)} members and a ${gems[0].mal_score?.toFixed(2) ?? "high score"}.` : ""} For
           when you have watched the famous ones.
         </p>
       </Reveal>
@@ -224,16 +229,16 @@ function Underrated({ gems }: { gems: Gem[] | null }) {
         <div className="gems">
           {gems.map((g, i) => (
             <Reveal key={g.mal_id} className="gem" delay={i * 110}>
-              <Link href="/explore" aria-label={g.title}>
+              <Link href={`/anime/${g.mal_id}`} aria-label={g.title}>
                 <span className="poster">
                   {g.image_url ? (
                     <Image src={g.image_url} alt={`${g.title} cover`} fill sizes="(max-width: 960px) 30vw, 220px" style={{ objectFit: "cover" }} />
                   ) : null}
-                  <span className="score-tag num">{g.mal_score.toFixed(2)}</span>
+                  <span className="score-tag num">{g.mal_score?.toFixed(2) ?? "n/a"}</span>
                 </span>
                 <h4>{g.title}</h4>
                 <p className="num">
-                  {compact(g.members_mal)} members{g.year ? `, ${g.year}` : ""}
+                  {compact(g.members_mal ?? 0)} members{g.year ? `, ${g.year}` : ""}
                 </p>
               </Link>
             </Reveal>
@@ -247,5 +252,9 @@ function Underrated({ gems }: { gems: Gem[] | null }) {
 }
 
 function Unavailable() {
-  return <p className="unavailable">This chart is unavailable right now. The API did not respond.</p>;
+  return (
+    <DataNote title="This chart could not be loaded." seed={7}>
+      The API did not respond. Refresh in a moment.
+    </DataNote>
+  );
 }

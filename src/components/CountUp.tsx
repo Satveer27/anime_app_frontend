@@ -13,13 +13,13 @@ export function CountUp({ value, duration = 1400, delay = 500 }: { value: number
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     let raf = 0;
-    el.textContent = "0";
+    const from = Math.round(value * 0.85);
     const timeout = window.setTimeout(() => {
       const start = performance.now();
       const tick = (now: number) => {
         const t = Math.min(1, (now - start) / duration);
         const eased = 1 - Math.pow(1 - t, 4);
-        el.textContent = fmt.format(Math.round(value * eased));
+        el.textContent = fmt.format(Math.round(from + (value - from) * eased));
         if (t < 1) raf = requestAnimationFrame(tick);
       };
       raf = requestAnimationFrame(tick);

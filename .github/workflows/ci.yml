@@ -53,8 +53,10 @@ jobs:
           echo "$home" | grep -q "Every anime" || { echo "Landing page is missing its headline"; exit 1; }
           echo "$home" | grep -q "Start exploring" || { echo "Landing page is missing its call to action"; exit 1; }
 
-          code=$(curl --silent --output /dev/null --write-out "%{http_code}" http://localhost:3000/explore)
-          [ "$code" = "200" ] || { echo "/explore returned $code"; exit 1; }
+          for route in /explore /top-airing /top-anime /statistics /anime/1; do
+            code=$(curl --silent --output /dev/null --write-out "%{http_code}" "http://localhost:3000$route")
+            [ "$code" = "200" ] || { echo "$route returned $code"; exit 1; }
+          done
 
           if grep -iE "error|unhandled" server.log; then
             echo "Server logged errors"; cat server.log; exit 1

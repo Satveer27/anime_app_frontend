@@ -13,7 +13,9 @@ Guidance for Claude Code when working in this repository.
 AnimePlanet frontend: a Next.js (App Router) + TypeScript + Tailwind v4 site that presents anime statistics from MyAnimeList. It reads the live FastAPI backend (`Satveer27/Anime_App_Backend`, its URL lives in `.env` as `NEXT_PUBLIC_API_URL`, see `.env.example`). It is a portfolio project deployed to Vercel.
 
 - Product truth: `PRODUCT.md`. Design reference screenshots (gitignored): `.design-ref/`.
-- Only the landing page (`/`) is built. `/explore` is a placeholder, the target of every "Start exploring" call to action.
+- Routes: `/` landing; `/explore` (filters synced to the URL); `/anime/[id]` full per-anime page (episode analysis, scores, cohort, reviews); `/top-airing` and `/top-anime` (no filters); `/statistics` (hidden gems, most dropped, aggregates; genres and studios link into `/explore`). Browser-side fetches need the deployed origin in the backend's CORS list.
+- Every nullable API field is typed nullable in `src/lib/api.ts` (mirrors the backend schemas). Missing data or failures render `DataNote`: a red note with a sad character. Never read a nested API field without a null check.
+- Playful layer: `Chibi.tsx` (fan-made chibi tributes to well-known characters, with a sad mood for errors; footer carries the disclaimer), `Mascot.tsx`, `PetalField.tsx` (ambient petals; data surfaces sit above them), nav peek in `Header.tsx`.
 
 ## Commands
 
@@ -36,6 +38,6 @@ npm run build && npm run start
 
 Night-printed woodblock: sumi-black ground, vermilion seal accent, washi-cream type, original seigaiha wave pattern (`Seigaiha.tsx`). Dark is default; light is the same print on washi paper. All colours are CSS variables in `src/app/globals.css` (`:root` and `:root[data-theme="light"]`).
 
-- Fonts: Shippori Mincho B1 (display, 800) and Zen Kaku Gothic New (body). Japanese glyphs load via a text-limited Google Fonts link in `layout.tsx`; add any new Japanese characters to `JP_TEXT`.
+- Fonts (copied from the Kigo reference, all open source): Poppins for display and text, Playfair Display bold italic for ONE accent word per page title (`<em className="accent">`), Yuji Boku for Japanese marks. Japanese glyphs load via a text-limited Google Fonts link in `layout.tsx`; add new characters to `JP_TEXT`.
 - Motion: ease-out curves `--ease-out` / `--ease-in-out`, transform and opacity only, buttons scale to 0.97 on press, hover effects gated behind `(hover: hover)`, everything respects `prefers-reduced-motion`.
 - Do not use gradients as decoration, emoji as icons, eyebrow labels above headings, or invented statistics. Every number on the page comes from the API.

@@ -1,6 +1,8 @@
 "use client";
 
-import { useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
+import Link from "next/link";
+import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from "react";
+import { GENRE_MIN_ANIME, STUDIO_MIN_ANIME } from "@/lib/aggregate";
 
 export type YearPoint = { year: number; count: number; mean: number };
 export type Rank = { name: string; mean: number; count: number };
@@ -10,11 +12,20 @@ const fmt = new Intl.NumberFormat("en");
 /* ---------------- Score by year ---------------- */
 
 export function YearChart({ points }: { points: YearPoint[] }) {
-  const W = 760;
-  const H = 300;
-  const pad = { l: 40, r: 10, t: 14, b: 30 };
+  // Drawn at the width it is shown at, so phones get readable type and real spacing instead of a shrunken desktop chart.
+  const [W, setW] = useState(760);
+  const H = W < 520 ? 270 : 300;
+  const pad = { l: 38, r: 10, t: 14, b: 30 };
   const [hover, setHover] = useState<number | null>(null);
   const ref = useRef<SVGSVGElement>(null);
+
+  useEffect(() => {
+    const host = ref.current?.parentElement;
+    if (!host || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(([entry]) => setW(Math.round(Math.max(280, Math.min(760, entry.contentRect.width)))));
+    ro.observe(host);
+    return () => ro.disconnect();
+  }, []);
 
   const lo = 5;
   const hi = 7.5;
@@ -23,7 +34,8 @@ export function YearChart({ points }: { points: YearPoint[] }) {
   const last = points[points.length - 1].year;
   const x = (yr: number) => pad.l + ((yr - first) / (last - first)) * (W - pad.l - pad.r);
   const y = (v: number) => pad.t + (1 - (v - lo) / (hi - lo)) * (H - pad.t - pad.b);
-  const barH = (c: number) => (c / maxCount) * 70;
+  const barH = (c: number) => (c / maxCount) * (W < 520 ? 56 : 70);
+  const barW = Math.max(2.5, Math.min(7, ((W - pad.l - pad.r) / points.length) * 0.62));
 
   const path = points.map((p, i) => `${i ? "L" : "M"}${x(p.year).toFixed(1)} ${y(p.mean).toFixed(1)}`).join(" ");
   const idx = hover ?? points.length - 1;
@@ -45,7 +57,7 @@ export function YearChart({ points }: { points: YearPoint[] }) {
   };
 
   const ticks = [5, 6, 7];
-  const years = points.filter((p) => p.year % 10 === 0);
+  const years = points.filter((p) => p.year % (W < 520 ? 20 : 10) === 0);
   const modern = points.filter((p) => p.count >= 100);
   const best = modern.reduce((a, b) => (b.mean > a.mean ? b : a), modern[0] ?? points[0]);
   const worst = modern.reduce((a, b) => (b.mean < a.mean ? b : a), modern[0] ?? points[0]);
@@ -87,8 +99,8 @@ export function YearChart({ points }: { points: YearPoint[] }) {
             key={p.year}
             className="ybar"
             style={{ ["--i" as string]: i }}
-            x={x(p.year) - 3.5}
-            width={7}
+            x={x(p.year) - barW / 2}
+            width={barW}
             y={H - pad.b - barH(p.count)}
             height={barH(p.count)}
             opacity={hover === i ? 0.9 : undefined}
@@ -141,7 +153,9 @@ export function Leaderboard({ genres, studios }: { genres: Rank[]; studios: Rank
           </button>
         ))}
       </div>
-      <p className="chart-note" style={{ marginTop: 0, marginBottom: 16 }}>Average MAL score. Bars start at 5.5, so they show the gap and not the total.</p>
+      <p className="chart-note" style={{ marginTop: 0, marginBottom: 16 }}>
+        {tab === "genres" ? `Genres with at least ${GENRE_MIN_ANIME} scored anime` : `Studios with at least ${STUDIO_MIN_ANIME} scored anime`}, ranked by average MAL score. Bars start at 5.5, so they show the gap and not the total.
+      </p>
       <ol className="board-list" key={tab}>
         {rows.map((r, i) => (
           <li key={r.name} style={{ ["--i" as string]: i }}>
@@ -153,6 +167,11 @@ export function Leaderboard({ genres, studios }: { genres: Rank[]; studios: Rank
           </li>
         ))}
       </ol>
+      <p className="board-foot">
+        <Link href="/statistics" className="link-btn">
+          Change the minimum ratings, filter by type, or see them all
+        </Link>
+      </p>
     </div>
   );
 }

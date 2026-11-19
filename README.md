@@ -2,7 +2,7 @@
 
 Anime statistics from MyAnimeList, built with Next.js, TypeScript and Tailwind. It reads the live AnimePlanet API (FastAPI, Postgres, Redis, Airflow pipeline).
 
-Currently built: the landing page. It shows real data from the API: the catalogue size, an episode-by-episode score trend, the highest drop rates, hidden gems, a score distribution, the top 12 anime and the catalogue mix by type.
+Built: the landing page and the explorer (`/explore`) with search, filters shared through the URL, and a per-anime stat sheet drawer. The landing page It shows real data from the API: the catalogue size, an episode-by-episode score trend, the highest drop rates, hidden gems, a score distribution, the top 12 anime and the catalogue mix by type.
 
 ## Run it
 

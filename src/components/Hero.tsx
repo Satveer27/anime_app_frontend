@@ -2,7 +2,9 @@ import Link from "next/link";
 import type { AnimeSummary } from "@/lib/api";
 import { displayTitle } from "@/lib/api";
 import { ArrowDown } from "./Icons";
+import { Mascot } from "./Mascot";
 import { PetalLink } from "./PetalLink";
+import { AccentWords } from "./AccentWords";
 import { CountUp } from "./CountUp";
 import { Poster } from "./Poster";
 import { Seigaiha } from "./Seigaiha";
@@ -14,6 +16,9 @@ export function Hero({ total, posters }: { total: number | null; posters: AnimeS
       <div className="hero-waves">
         <Seigaiha id="sg-hero" />
       </div>
+      <span className="hero-brush jp" aria-hidden="true">
+        数
+      </span>
       <div className="wrap hero-grid">
         <div>
           <h1 id="hero-title" className="hero-title">
@@ -21,12 +26,16 @@ export function Hero({ total, posters }: { total: number | null; posters: AnimeS
               <span>Which anime is</span>
             </span>
             <span className="line">
-              <span>worth your weekend?</span>
+              <span>worth your</span>
+            </span>
+            <span className="line line-aw">
+              <span className="accent">
+                <AccentWords words={["weekend?", "evening?", "free time?"]} />
+              </span>
             </span>
           </h1>
           <p className="hero-sub">
-            Check the drop rate and the episode-by-episode scores before you press play. Every anime on MyAnimeList,
-            analysed.
+            Check the drop rate and the episode-by-episode scores before you press play.
           </p>
           <div className="hero-actions">
             <PetalLink href="/explore">Start exploring</PetalLink>
@@ -45,6 +54,7 @@ export function Hero({ total, posters }: { total: number | null; posters: AnimeS
               </div>
             </div>
           ) : null}
+          <Mascot kind="luffy" className="mascot-hero" pop={false} />
         </div>
       </div>
 
@@ -56,7 +66,7 @@ export function Hero({ total, posters }: { total: number | null; posters: AnimeS
               return (
                 <Link
                   key={`${a.mal_id}-${i}`}
-                  href="/explore"
+                  href={`/anime/${a.mal_id}`}
                   className="marquee-item"
                   aria-hidden={dup || undefined}
                   tabIndex={dup ? -1 : undefined}
