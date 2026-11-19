@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Lint, typecheck, build, smoke test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Set this as a repository secret (Settings > Secrets and variables > Actions)
+      NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      - name: Backend is reachable
+        if: ${{ env.NEXT_PUBLIC_API_URL != '' }}
+        run: curl --fail --silent --show-error --retry 3 --retry-delay 5 "$NEXT_PUBLIC_API_URL/health/live"
+
+      - name: Start the app and smoke test it
+        run: |
+          npm run start -- -p 3000 > server.log 2>&1 &
+          for i in $(seq 1 30); do
+            if curl --silent --fail http://localhost:3000/ > /dev/null; then break; fi
+            sleep 2
+          done
+
+          home=$(curl --silent --fail http://localhost:3000/)
+          echo "$home" | grep -q "Every anime" || { echo "Landing page is missing its headline"; exit 1; }
+          echo "$home" | grep -q "Start exploring" || { echo "Landing page is missing its call to action"; exit 1; }
+
+          code=$(curl --silent --output /dev/null --write-out "%{http_code}" http://localhost:3000/explore)
+          [ "$code" = "200" ] || { echo "/explore returned $code"; exit 1; }
+
+          if grep -iE "error|unhandled" server.log; then
+            echo "Server logged errors"; cat server.log; exit 1
+          fi
+          echo "App is up with no errors"
+
+      - name: Server log
+        if: failure()
+        run: cat server.log || true
