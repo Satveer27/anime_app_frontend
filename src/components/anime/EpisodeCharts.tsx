@@ -224,7 +224,8 @@ export function EveryEpisodeChart({ episodes, best, worst }: { episodes: Episode
   const scores = pts.map((p) => p.mal_score as number);
   const { lo, hi, ticks } = axisRange(scores);
   const H = 300;
-  const pad = { t: 22, b: 34, l: 14, r: 24 };
+  const hasYears = pts.some((p) => p.aired);
+  const pad = { t: 22, b: hasYears ? 66 : 34, l: 14, r: 24 };
   const step = Math.max(16, 900 / pts.length);
   const W = pad.l + pad.r + (pts.length - 1) * step + 1;
   const y = (v: number) => pad.t + (1 - (v - lo) / (hi - lo)) * (H - pad.t - pad.b);
@@ -269,11 +270,26 @@ export function EveryEpisodeChart({ episodes, best, worst }: { episodes: Episode
             ))}
             {pts.map((p, i) =>
               i % every === 0 ? (
-                <text key={p.episode_number} x={x(i)} y={H - 10} textAnchor="middle" className="num">
+                <text key={p.episode_number} x={x(i)} y={hasYears ? H - 42 : H - 10} textAnchor="middle" className="num">
                   {p.episode_number}
                 </text>
               ) : null,
             )}
+            {hasYears
+              ? pts.map((p, i) => {
+                  const yr = p.aired ? new Date(p.aired).getUTCFullYear() : null;
+                  const prev = i > 0 && pts[i - 1].aired ? new Date(pts[i - 1].aired as string).getUTCFullYear() : null;
+                  if (yr == null || (i > 0 && yr === prev)) return null;
+                  return (
+                    <g key={`yr${i}`} className="ec-year">
+                      <line x1={x(i)} x2={x(i)} y1={H - 34} y2={H - 26} />
+                      <text x={x(i)} y={H - 9} textAnchor={i === 0 ? "start" : "middle"} className="num">
+                        {yr}
+                      </text>
+                    </g>
+                  );
+                })
+              : null}
             <path className="ec-line" d={line} />
             <line className="cursor" x1={x(curI)} x2={x(curI)} y1={pad.t} y2={H - pad.b} />
             {pts.map((p, i) => (

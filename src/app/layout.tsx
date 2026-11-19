@@ -2,7 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Poppins } from "next/font/google";
 import "./globals.css";
 import { PetalField } from "@/components/PetalField";
+import { Suspense } from "react";
 import { ScrollTop } from "@/components/ScrollTop";
+import { NavProgress } from "@/components/NavProgress";
 
 const body = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"], variable: "--font-body", display: "swap" });
 const accent = Playfair_Display({ subsets: ["latin"], weight: ["700"], style: ["italic"], variable: "--font-accent", display: "swap" });
@@ -34,6 +36,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <PetalField />
         <ScrollTop />
+        <Suspense fallback={null}>
+          <NavProgress />
+        </Suspense>
         {children}
       </body>
     </html>
