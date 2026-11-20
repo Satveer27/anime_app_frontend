@@ -3,6 +3,7 @@ import { Playfair_Display, Poppins } from "next/font/google";
 import "./globals.css";
 import { PetalField } from "@/components/PetalField";
 import { Suspense } from "react";
+import { Analytics } from "@vercel/analytics/next";
 import { ScrollTop } from "@/components/ScrollTop";
 import { NavProgress } from "@/components/NavProgress";
 
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <NavProgress />
         </Suspense>
         {children}
+        <Analytics />
       </body>
     </html>
   );
