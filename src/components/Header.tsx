@@ -8,6 +8,7 @@ const NAV: { href: string; label: string; kind: ChibiKind }[] = [
   { href: "/explore", label: "Explore", kind: "luffy" },
   { href: "/top-airing", label: "Top airing", kind: "naruto" },
   { href: "/top-anime", label: "Top anime", kind: "goku" },
+  { href: "/compare", label: "Compare", kind: "gon" },
   { href: "/statistics", label: "Statistics", kind: "tanjiro" },
 ];
 

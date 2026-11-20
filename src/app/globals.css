@@ -5004,3 +5004,499 @@ html.menu-open {
   align-items: center;
   min-height: 44px;
 }
+
+/* =====================================================================================
+   Compare page. Anime A is pink, anime B is teal, so the two never get confused with the
+   red-to-green score colours used everywhere else.
+   ===================================================================================== */
+:root {
+  --cmp-a: #f08fa9;
+  --cmp-b: #4cc2bd;
+}
+:root[data-theme="light"] {
+  --cmp-a: #c2416a;
+  --cmp-b: #1b6f73;
+}
+
+.cmp {
+  position: relative;
+  z-index: 31;
+}
+.cmp-picks {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  align-items: stretch;
+}
+@media (min-width: 860px) {
+  .cmp-picks {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 20px;
+  }
+}
+.cmp-slot {
+  position: relative;
+  padding: 18px 20px 20px;
+  background: var(--surface);
+  border-top: 4px solid var(--c);
+  min-height: 124px;
+}
+.cmp-a {
+  --c: var(--cmp-a);
+}
+.cmp-b {
+  --c: var(--cmp-b);
+}
+.cmp-side {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--c);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+.cmp-input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  background: var(--bg);
+  color: var(--ink);
+  border: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
+  border-radius: 2px;
+  font: inherit;
+  font-size: 1rem;
+}
+.cmp-input:focus-visible {
+  outline: 2px solid var(--c);
+  outline-offset: 2px;
+}
+.cmp-results {
+  position: absolute;
+  z-index: 60;
+  inset: auto 0 auto 0;
+  top: calc(100% - 6px);
+  margin: 0 12px;
+  padding: 6px;
+  list-style: none;
+  background: var(--surface-2);
+  border-radius: 2px;
+  box-shadow: var(--shadow);
+  animation: fade-up 160ms var(--ease-out) both;
+}
+.cmp-results button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px;
+  background: none;
+  border: 0;
+  color: var(--ink);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.cmp-results button.is-cursor {
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
+}
+@media (hover: hover) and (pointer: fine) {
+  .cmp-results button:hover {
+    background: color-mix(in srgb, var(--ink) 10%, transparent);
+  }
+}
+.cmp-results strong {
+  display: block;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.cmp-results small {
+  color: var(--ink-3);
+  font-size: 0.8125rem;
+}
+.cmp-hint {
+  padding: 12px 10px;
+  color: var(--ink-3);
+}
+.cmp-thumb,
+.cmp-poster {
+  position: relative;
+  flex: none;
+  overflow: hidden;
+  background: var(--surface-2);
+  border-radius: 2px;
+}
+.cmp-thumb {
+  width: 36px;
+  aspect-ratio: 2 / 3;
+}
+.cmp-poster {
+  width: 64px;
+  aspect-ratio: 2 / 3;
+}
+.cmp-slot.is-chosen {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.cmp-chosen-body {
+  flex: 1;
+  min-width: 0;
+}
+.cmp-name {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--ink);
+  text-decoration: none;
+}
+.cmp-sub {
+  margin-top: 4px;
+  color: var(--ink-3);
+  font-size: 0.875rem;
+}
+.cmp-change {
+  flex: none;
+  align-self: flex-start;
+}
+.cmp-swap {
+  align-self: center;
+  justify-self: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--ink) 25%, transparent);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 1.125rem;
+  cursor: pointer;
+  transition: transform 160ms var(--ease-out), background-color 200ms ease;
+}
+.cmp-swap:active {
+  transform: scale(0.94);
+}
+.cmp-swap:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+@media (hover: hover) and (pointer: fine) {
+  .cmp-swap:not(:disabled):hover {
+    background: var(--surface-2);
+  }
+}
+.cmp-suggest {
+  margin-top: 28px;
+}
+.cmp-suggest > p {
+  color: var(--ink-2);
+  margin-bottom: 10px;
+}
+.cmp-suggest .chip {
+  cursor: pointer;
+  font: inherit;
+  min-height: 40px;
+}
+.cmp-empty {
+  margin-top: 48px;
+  max-width: 34rem;
+  color: var(--ink-2);
+  font-size: 1.125rem;
+}
+.cmp-loading {
+  display: grid;
+  gap: 16px;
+  margin-top: 40px;
+}
+
+.cmp-body {
+  margin-top: 16px;
+}
+.cmp-section {
+  margin-top: clamp(48px, 7vw, 88px);
+}
+.cmp-section > h2 {
+  font-size: clamp(1.75rem, 3.4vw, 2.5rem);
+}
+.cmp-tally {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 24px 0 8px;
+  max-width: 560px;
+}
+.cmp-tally > span {
+  font-size: 1.75rem;
+  font-weight: 700;
+  min-width: 1.5ch;
+}
+.cmp-tally > i {
+  flex: 1;
+  display: flex;
+  gap: 4px;
+  height: 10px;
+}
+.cmp-tally b {
+  display: block;
+  background: var(--c);
+  border-radius: 999px;
+  transition: flex-grow 500ms var(--ease-out);
+}
+.cmp-tally > span.cmp-a,
+.cmp-tally > span.cmp-b {
+  color: var(--c);
+}
+
+.cmp-rows {
+  list-style: none;
+  margin: 28px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+.cmp-rows > li {
+  padding: 18px 20px 20px;
+  background: var(--surface);
+  animation: fade-up 420ms calc(var(--i, 0) * 40ms) var(--ease-out) both;
+}
+.cmp-row-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 16px;
+}
+.cmp-row-head strong {
+  font-size: 1.0625rem;
+}
+.cmp-row-head span {
+  color: var(--ink-3);
+  font-size: 0.875rem;
+}
+.cmp-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 28px;
+  margin-top: 12px;
+}
+.cmp-cell b {
+  display: block;
+  font-size: 1.5rem;
+  line-height: 1.1;
+  color: var(--ink);
+}
+.cmp-cell:first-child {
+  text-align: right;
+}
+.cmp-bar {
+  display: block;
+  height: 12px;
+  margin-top: 8px;
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.cmp-bar i {
+  display: block;
+  height: 100%;
+  background: var(--c);
+  border-radius: 999px;
+  opacity: 0.55;
+  transform-origin: left;
+  animation: cmp-grow 700ms var(--ease-out) both;
+  transition: opacity 250ms ease;
+}
+.cmp-cell:first-child .cmp-bar i {
+  margin-left: auto;
+  transform-origin: right;
+}
+.cmp-cell.is-win .cmp-bar i {
+  opacity: 1;
+}
+.cmp-cell.is-win b {
+  color: var(--c);
+}
+.cmp-cell.is-lose b {
+  color: var(--ink-2);
+}
+@keyframes cmp-grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.cmp-dist {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: clamp(4px, 1.4vw, 14px);
+  padding: 24px clamp(14px, 3vw, 28px) 14px;
+}
+.cmp-dist-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.cmp-dist-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+  height: 200px;
+  width: 100%;
+}
+.cmp-dist-bars i {
+  flex: 1;
+  max-width: 22px;
+  min-height: 2px;
+  background: var(--c);
+  border-radius: 2px 2px 0 0;
+  transform-origin: bottom;
+  animation: cmp-rise 650ms var(--ease-out) both;
+}
+@keyframes cmp-rise {
+  from {
+    transform: scaleY(0);
+  }
+}
+.cmp-dist-col > span {
+  color: var(--ink-2);
+  font-size: 0.875rem;
+}
+
+.cmp-chart {
+  padding: 18px clamp(12px, 2.5vw, 24px) 16px;
+}
+.cmp-readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  min-height: 44px;
+  font-size: 0.9375rem;
+  color: var(--ink-2);
+}
+.cmp-readout .cmp-a,
+.cmp-key .cmp-a {
+  color: var(--cmp-a);
+}
+.cmp-readout .cmp-b,
+.cmp-key .cmp-b {
+  color: var(--cmp-b);
+}
+.cmp-svg {
+  display: block;
+  max-width: 100%;
+  touch-action: pan-y;
+}
+.cmp-svg text {
+  fill: var(--ink-3);
+  font-size: 13px;
+}
+.cmp-svg .grid {
+  stroke: color-mix(in srgb, var(--ink) 10%, transparent);
+}
+.cmp-svg .cursor {
+  stroke: var(--ink-3);
+  stroke-dasharray: 3 4;
+}
+.cmp-line {
+  fill: none;
+  stroke: var(--c);
+  stroke-width: 3.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.cmp-dot {
+  fill: var(--c);
+  stroke: var(--surface);
+  stroke-width: 3;
+}
+.cmp-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 24px;
+  margin-top: 8px;
+  font-weight: 600;
+}
+.cmp-key span::before {
+  content: "";
+  display: inline-block;
+  width: 22px;
+  height: 4px;
+  margin-right: 8px;
+  vertical-align: middle;
+  background: currentColor;
+  border-radius: 2px;
+}
+.cmp-share {
+  margin-top: 40px;
+  color: var(--ink-3);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cmp-bar i,
+  .cmp-dist-bars i,
+  .cmp-rows > li,
+  .cmp-results {
+    animation: none;
+  }
+}
+
+/* compare: critic fixes */
+:root[data-theme="light"] {
+  --cmp-a: #b3307c;
+}
+.cmp-slot {
+  min-height: 144px;
+}
+.cmp-side {
+  white-space: nowrap;
+}
+.cmp-results {
+  margin: 0;
+  inset-inline: 0;
+}
+.cmp-low {
+  font-style: normal;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 12%, transparent);
+  color: var(--ink-2);
+}
+.cmp-bar i {
+  opacity: 0.4;
+}
+.cmp-rows > li:has(.cmp-cell:not(.is-win):not(.is-lose)) .cmp-bar i {
+  opacity: 1;
+}
+.cmp-cell.is-win .cmp-bar i {
+  opacity: 1;
+}
+.cmp-check {
+  display: inline-block;
+  margin-right: 8px;
+  font-size: 0.875rem;
+  color: var(--c);
+  vertical-align: 0.1em;
+}
+.cmp-key-tight {
+  margin-top: 0;
+  font-size: 0.9375rem;
+}
+.cmp-dist-bars i {
+  min-height: 3px;
+}
+.cmp-empty {
+  text-wrap: balance;
+  margin-top: 28px;
+}
+.anime-ext .anime-compare {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 18px;
+  min-height: 44px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent-text) 55%, transparent);
+  text-decoration: none;
+}

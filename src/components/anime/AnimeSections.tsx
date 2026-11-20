@@ -109,6 +109,7 @@ export function AnimeHero({ data, episodes }: { data: AnimeStatistics; episodes?
           <a href={`https://myanimelist.net/anime/${c.mal_id}`} target="_blank" rel="noreferrer">
             View on MyAnimeList
           </a>
+          <Link href={`/compare?a=${c.mal_id}`} className="btn-quiet anime-compare">Compare with another</Link>
           {c.rating ? <span>Rated {c.rating}</span> : null}
           {c.source_material ? <span>Source: {c.source_material}</span> : null}
         </p>
