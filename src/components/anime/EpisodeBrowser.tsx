@@ -78,7 +78,10 @@ export function EpisodeBrowser({ episodes, best, worst }: Props) {
       {rows.length === 0 ? (
         <p className="unavailable">No episodes match that.</p>
       ) : view === "cards" ? (
-        <EpisodeCards rows={rows} best={best} worst={worst} />
+        <>
+          <EpisodeCards rows={rows} best={best} worst={worst} />
+          {rows.length > 150 ? <p className="chart-note egrid-hint">Scroll inside the box to see all {integer(rows.length)} episodes.</p> : null}
+        </>
       ) : (
         <>
           <EpisodeList rows={rows.slice(0, shown)} best={best} worst={worst} />

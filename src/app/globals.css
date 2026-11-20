@@ -5500,3 +5500,25 @@ html.menu-open {
   border: 1px solid color-mix(in srgb, var(--accent-text) 55%, transparent);
   text-decoration: none;
 }
+
+/* tap targets: chips and segmented buttons are 44px tall on every pointer, not only touch */
+.chip,
+.seg-btn {
+  min-height: 44px;
+}
+
+/* long series: the card box fades at its bottom edge so a cut row reads as "more below", with a hint under it */
+.egrid-scroll {
+  padding-bottom: 34px;
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 44px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 44px), transparent 100%);
+}
+.egrid-hint {
+  margin-top: 4px;
+}
+
+/* light theme: identity colours used as small text now clear 4.5:1 on the card surface */
+:root[data-theme="light"] {
+  --cmp-a: #a62b6f;
+  --cmp-b: #176468;
+}

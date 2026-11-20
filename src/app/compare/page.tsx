@@ -28,7 +28,7 @@ export default async function ComparePage() {
           </div>
           <Mascot kind="gon" className="top-mascot" pop={false} />
         </section>
-        <div className="wrap" style={{ paddingBottom: 112 }}>
+        <div className="wrap" style={{ paddingBottom: 56 }}>
           <Suspense fallback={null}>
             <Compare picks={popular?.items ?? []} />
           </Suspense>
